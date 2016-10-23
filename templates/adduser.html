@@ -1,0 +1,37 @@
+{% extends 'Base.html' %}
+
+{% block body %}
+    <div class="col-md-5" style="margin-top: 20px; text-align: center; border-radius: 10px">
+{#         <ul style="margin-top: 5px">#}
+{#            {% for usuario in usuarios %}#}
+{#                <li style="margin-bottom: 10px;">{{ usuario.usuario }}  <i class="fa fa-minus" onclick="showDialog('/delete/{{ usuario.id }}','Está seguro que desea eliminar este usuario?');"></i></li>#}
+{#            {% endfor %}#}
+{#         </ul>#}
+
+    <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Eliminar</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.usuario }}</td>
+                    <td><div class="btn btn-default" onclick="showDialog('/delete/{{ usuario.id }}','Está seguro que desea eliminar este usuario?');"><i class="fa fa-minus"></i></div></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-2">
+    <h3><i class="fa fa-user"></i> Adicionar un usuario</h3>
+        <form method="post" name="formulario">
+            {% csrf_token %}
+            <div class="form-group"><input class="form-control" type="text" name="user" placeholder="usuario"></div>
+            <div class="form-group"><input type="submit" class="btn btn-primary" value="Adicionar"></div>
+        </form>
+    </div>
+    <div class="col-md-5"></div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% load staticfiles %}
+{% load get_aporte_tag %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Estado del Aporte CS Miraflores</title>
+    <link href="{% static "styles/font-awesome.css" %}" type="text/css" rel="stylesheet">
+    <link href="{% static "styles/bootstrap.css" %}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{% static "js/jquery-1.11.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootbox.min.js" %}"></script>
+</head>
+<body>
+<div class="modal-header col-md-12">
+    <div class="col-md-1"><img src="{% static "img/miraflores.png" %}" width="100px" height="50px"></div>
+    <div class="col-md-7" ><h2 class="modal-title">Estado del Aporte CS Miraflores  </h2></div>
+    <div class="col-md-2" style="border: #5e5e5e solid 1px; text-align: center; border-radius: 10px;"><h4>Este mes: <i class="fa fa-dollar"></i> {% get_aporte_mes %} </h4></div>
+    <div class="col-md-2" style="border: #5e5e5e solid 1px; text-align: center; border-radius: 10px; background-color: #a94442; color: #ffffff"><h4>Aporte total: <i class="fa fa-dollar"></i> {% get_aporte %}</h4></div>
+</div>
+{% include "_messages.html" %}
+
+<div class="col-md-2" style="margin-top: 10px">
+    <a href="/">
+        <div class="col-md-12 btn btn-primary" style="margin-top: 10px">Estado del Aporte</div>
+    </a>
+    {% if user.is_staff %}
+        <a href="/adduser">
+            <div class="col-md-12 btn btn-primary" style="margin-top: 10px">Usuarios</div>
+        </a>
+        <a href="/pagar">
+            <div class="col-md-12 btn btn-primary" style="margin-top: 10px">Pagar Aporte</div>
+        </a>
+
+    {% endif %}
+
+    <a href="/gastos">
+        <div class="col-md-12 btn btn-primary" style="margin-top: 10px">Registro de Gastos</div>
+    </a>
+
+    {% if not user.is_authenticated %}
+        <a href="/login">
+            <div class="col-md-12 btn btn-primary" style="margin-top: 10px">Entrar</div>
+        </a>
+    {% else %}
+        <a href="/logout">
+            <div class="col-md-12 btn btn-primary" style="margin-top: 10px">Salir</div>
+        </a>
+    {% endif %}
+
+</div>
+</div>
+{% block body %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        var showDialog = function (url, msg) {
+            bootbox.dialog({
+                message: msg,
+                title: "Alerta",
+                buttons: {
+                    success: {
+                        label: "Aceptar",
+                        className: "btn-success",
+                        callback: function () {
+                            window.open(url, "_parent");
+                        }
+                    },
+                    danger: {
+                        label: "Cancelar",
+                        className: "btn-danger",
+                        callback: function () {
+                            {#                                window.open("","_parent")#}
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+{% endblock %}
+
+
+</body>
+</html>

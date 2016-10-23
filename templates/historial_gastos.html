@@ -1,0 +1,43 @@
+{% extends 'Base.html' %}
+
+{% block body %}
+    {% if not user.is_staff %}
+        <div class="col-md-2"></div>
+    {% endif %}
+    <div class="col-md-6" style="margin-top: 20px; text-align: center; border-radius: 10px">
+        {% if gastos|length == 0 %}
+            <div style="margin-top: 10px">No se han registrado gastos</div>
+        {% endif %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Motivo</th>
+                <th>Cantidad</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for gasto in gastos|dictsortreversed:"fecha" %}
+                <tr>
+                    <td>{{ gasto.motivo }}</td>
+                    <td><i class="fa fa-dollar"/> {{ gasto.cantidad }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    </div>
+    {% if user.is_staff %}
+        <div class="col-md-3">
+                <h3><i class="fa fa-bank"></i> Registrar un gasto</h3>
+                <form method="post" name="formulario">
+                    {% csrf_token %}
+                    <div class="form-group"><textarea class="form-control" type="text" name="motivo"
+                                                      placeholder="Motivo del gasto"></textarea></div>
+                    <div class="form-group"><input class="form-control" type="number" name="cantidad" placeholder="1" value="1"></div>
+                    <div class="form-group"><input type="submit" class="btn btn-primary" value="Registrar gasto"></div>
+                </form>
+        </div>
+    {% endif %}
+    <div class="col-md-3"></div>
+{% endblock %}

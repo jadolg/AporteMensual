@@ -1,0 +1,33 @@
+{% extends 'Base.html' %}
+
+{% block body %}
+    <div class="col-md-5" style="margin-top: 20px">
+        <div class="col-md-12">
+            <div class="col-md-5"></div>
+            <div class="col-md-2">
+                <div class="btn btn-danger" onclick="showDialog('/restart','Está seguro que desea reiniciar el mes?');">Reiniciar Mes</div>
+            </div>
+            <div class="col-md-5"></div>
+        </div>
+    </div>
+    <div class="col-md-2">
+    <h3><i class="fa fa-money"></i> Pagar aporte</h3>
+        <form method="post" name="formulario">
+            {% csrf_token %}
+            <div class="form-group">
+                <select name="user">
+                    {% for usuario in usuarios %}
+                        {% if usuario.usuario == selected %}
+                            <option selected style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}</option>
+                        {% else %}
+                            <option style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group"><input class="form-control" type="number" name="cantidad" placeholder="1" value="1"></div>
+            <div class="form-group"><input type="submit" class="btn btn-primary" value="Pagar"></div>
+        </form>
+    </div>
+    <div class="col-md-5"></div>
+{% endblock %}
