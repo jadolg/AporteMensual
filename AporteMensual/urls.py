@@ -16,7 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from AporteDatabase.views import index, login_user, logout_user, add_user, delete_user, pagar, restart, gastos, undo
+
+from AporteDatabase.views import index, login_user, logout_user, add_user, delete_user, pagar, restart, gastos, undo, \
+    historial_aporte
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -30,4 +32,5 @@ urlpatterns = [
     url(r'^pagar$', pagar, name='pagar'),
     url(r'^restart$', restart, name='restart'),
     url(r'^gastos$', gastos, name='gastos'),
+    url(r'^historial$', historial_aporte, name='historial_aporte'),
 ]

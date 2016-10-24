@@ -33,3 +33,14 @@ class HistorialGastos(models.Model):
     def __str__(self):
         return str(self.cantidad) + "  " + self.motivo
 
+
+@python_2_unicode_compatible
+class HistorialPagos(models.Model):
+    usuario = models.CharField(max_length=100)
+    aporte = models.FloatField(default=0)
+    mes = models.IntegerField(default=0)
+    ano = models.IntegerField(default=0)
+    # fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.aporte) + "  " + self.usuario

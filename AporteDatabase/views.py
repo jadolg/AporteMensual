@@ -1,3 +1,5 @@
+from datetime import datetime, date
+
 import pinax
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -5,7 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from AporteDatabase.models import AporteMes, AporteTotal, HistorialGastos
+from AporteDatabase.models import AporteMes, AporteTotal, HistorialGastos, HistorialPagos
 from django.contrib import messages
 
 def index(request):
@@ -41,6 +43,26 @@ def delete_user(request,uid):
     return HttpResponseRedirect('/adduser')
 
 
+def historial_aporte(request):
+    result = []
+    row_total = ["Total", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for usuario in AporteMes.objects.all():
+        aux = [usuario.usuario, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0]
+        total = 0
+        for historial in HistorialPagos.objects.filter(usuario=usuario.usuario,ano=date.today().year).order_by('mes'):
+            aux[historial.mes] = historial.aporte
+            total += historial.aporte
+            row_total[historial.mes] += historial.aporte
+
+        aux[13] = total
+        row_total[13] += total
+        result.append(aux)
+
+    result.append(row_total)
+
+    return render(request,"historial_aporte.html", {"aporte":result})
+
+
 @login_required
 def pagar(request, uid=None):
     selected = 0
@@ -70,10 +92,15 @@ def pagar(request, uid=None):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def restart(request):
-    for i in AporteMes.objects.all():
-        i.aporte = 0
-        i.save()
-    messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
+    if len(HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)) > 0:
+        messages.add_message(request, messages.ERROR, "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
+    else:
+        for i in AporteMes.objects.all():
+            HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year).save()
+            i.aporte = 0
+            i.save()
+        messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
+
     return HttpResponseRedirect('/')
 
 
