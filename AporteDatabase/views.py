@@ -20,9 +20,9 @@ def index(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def add_user(request):
-    if request.method == 'POST' and request.POST.has_key('user'):
+    if request.method == 'POST' and request.POST.has_key('user') and request.POST.has_key('rango') and request.POST.has_key('cant_usuarios') and request.POST['cant_usuarios'] != '':
         if len(AporteMes.objects.filter(usuario=request.POST['user'])) == 0:
-            AporteMes(usuario=request.POST['user']).save()
+            AporteMes(usuario=request.POST['user'], rango=request.POST['rango'],cant_usuarios=int(request.POST['cant_usuarios'])).save()
             messages.add_message(request, messages.INFO, "Usuario "+request.POST['user']+" creado satisfactoriamente")
         else:
             messages.add_message(request, messages.ERROR,"Ya existe un usuario con este nombre")

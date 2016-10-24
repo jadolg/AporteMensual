@@ -12,13 +12,17 @@
             <thead>
             <tr>
                 <th>Usuario</th>
+                <th>Rango</th>
+                <th>Cantidad de Usuarios</th>
                 <th>Eliminar</th>
             </tr>
             </thead>
             <tbody>
-            {% for usuario in usuarios %}
+            {% for usuario in usuarios|dictsort:"rango" %}
                 <tr>
                     <td>{{ usuario.usuario }}</td>
+                    <td>{{ usuario.rango }}</td>
+                    <td>{{ usuario.cant_usuarios }}</td>
                     <td><div class="btn btn-default" onclick="showDialog('/delete/{{ usuario.id }}','Está seguro que desea eliminar este usuario?');"><i class="fa fa-minus"></i></div></td>
                 </tr>
             {% endfor %}
@@ -30,6 +34,8 @@
         <form method="post" name="formulario">
             {% csrf_token %}
             <div class="form-group"><input class="form-control" type="text" name="user" placeholder="usuario"></div>
+            <div class="form-group"><input class="form-control" type="text" name="rango" placeholder="10.24.17"></div>
+            <div class="form-group"><input class="form-control" type="number" name="cant_usuarios" placeholder="1" value="1"></div>
             <div class="form-group"><input type="submit" class="btn btn-primary" value="Adicionar"></div>
         </form>
     </div>
