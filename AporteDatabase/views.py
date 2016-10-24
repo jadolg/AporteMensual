@@ -121,6 +121,22 @@ def gastos(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_staff)
+def subsanar_gasto(request, id):
+    try:
+        gasto = HistorialGastos.objects.get(id=id)
+        total = AporteTotal.objects.all()[0]
+        total.aporte += gasto.cantidad
+        total.save()
+        gasto.delete()
+        messages.add_message(request, messages.INFO, "Se ha subsanado correctamente el gasto")
+    except:
+        messages.add_message(request, messages.INFO, "No se puede subsanar el gasto")
+
+    return HttpResponseRedirect('/gastos')
+
+
+@login_required
 def undo(request, uid):
     try:
         aporte = AporteMes.objects.get(id=uid)
