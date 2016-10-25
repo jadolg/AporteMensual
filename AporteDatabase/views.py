@@ -68,14 +68,17 @@ def pagar(request, uid=None):
     selected = 0
     if request.method == 'POST':
         if request.POST.has_key('user') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '':
-            aporte = AporteMes.objects.get(id=int(request.POST['user']))
-            aporte.aporte = float(request.POST['cantidad'])
-            aporte.save()
+            if float(request.POST['cantidad']) <= 0:
+                messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
+            else:
+                aporte = AporteMes.objects.get(id=int(request.POST['user']))
+                aporte.aporte = float(request.POST['cantidad'])
+                aporte.save()
 
-            total = AporteTotal.objects.all()[0]
-            total.aporte += float(request.POST['cantidad'])
-            total.save()
-            messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
+                total = AporteTotal.objects.all()[0]
+                total.aporte += float(request.POST['cantidad'])
+                total.save()
+                messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
         else:
             messages.add_message(request, messages.ERROR, "Datos insuficientes para realizar aporte")
 
@@ -109,11 +112,14 @@ def gastos(request):
         if not request.user.is_staff:
             messages.add_message(request, messages.ERROR, "Solo un administrador puede introducir gastos")
         elif request.POST.has_key('motivo') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '' and request.POST['motivo'] != '':
-            HistorialGastos(motivo=request.POST['motivo'], cantidad=float(request.POST['cantidad'])).save()
-            total = AporteTotal.objects.all()[0]
-            total.aporte -= float(request.POST['cantidad'])
-            total.save()
-            messages.add_message(request, messages.INFO, "Gasto agregado correctamente")
+            if float(request.POST['cantidad']) <= 0:
+                messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
+            else:
+                HistorialGastos(motivo=request.POST['motivo'], cantidad=float(request.POST['cantidad'])).save()
+                total = AporteTotal.objects.all()[0]
+                total.aporte -= float(request.POST['cantidad'])
+                total.save()
+                messages.add_message(request, messages.INFO, "Gasto agregado correctamente")
         else:
             messages.add_message(request, messages.ERROR, "Datos insuficientes para introducir un gasto")
 
