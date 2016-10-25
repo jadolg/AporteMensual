@@ -18,9 +18,9 @@
                 <select name="user">
                     {% for usuario in usuarios %}
                         {% if usuario.usuario == selected %}
-                            <option selected style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}</option>
+                            <option selected style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}({{ usuario.cant_usuarios }} usuarios) ({{ usuario.rango }})</option>
                         {% else %}
-                            <option style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}</option>
+                            <option style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}({{ usuario.cant_usuarios }} usuarios) ({{ usuario.rango }})</option>
                         {% endif %}
                     {% endfor %}
                 </select>
