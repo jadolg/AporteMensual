@@ -21,7 +21,9 @@
                 <tr>
                     <td>{{ gasto.motivo }}</td>
                     <td><i class="fa fa-dollar"/> {{ gasto.cantidad }}</td>
-                    <td><div class="btn btn-default" onclick="showDialog('/subsanar_gasto/{{ gasto.id }}','Al eliminar este gasto el dinero volverá al total. Esta seguro que desea continuar?');"><i class="fa fa-minus"></i></div></td>
+                    {% if user.is_staff %}
+                        <td><div class="btn btn-default" onclick="showDialog('/subsanar_gasto/{{ gasto.id }}','Al eliminar este gasto el dinero volverá al total. Esta seguro que desea continuar?');"><i class="fa fa-minus"></i></div></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
