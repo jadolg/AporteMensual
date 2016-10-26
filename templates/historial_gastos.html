@@ -13,7 +13,9 @@
             <tr>
                 <th>Motivo</th>
                 <th>Cantidad</th>
-                <th>Subsanar</th>
+                {% if user.is_staff %}
+                    <th>Subsanar</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
