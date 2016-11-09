@@ -1,6 +1,5 @@
 from datetime import datetime, date
 
-import pinax
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http.response import HttpResponseRedirect
@@ -79,13 +78,24 @@ def pagar(request, uid=None):
                 total.aporte += float(request.POST['cantidad'])
                 total.save()
                 messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
+                next_id = 0
+                for i in xrange(0,len(AporteMes.objects.all())):
+                    if aporte == AporteMes.objects.all()[i] and i != len(AporteMes.objects.all())-1:
+                        try:
+                            next_id =  AporteMes.objects.all()[i+1].id
+                        finally:
+                            break
+                return HttpResponseRedirect('/pagar/'+str(next_id))
         else:
             messages.add_message(request, messages.ERROR, "Datos insuficientes para realizar aporte")
 
     usuarios = AporteMes.objects.filter(aporte=0)
 
     if uid is not None:
-        selected = AporteMes.objects.get(id=uid).usuario
+        try:
+            selected = AporteMes.objects.get(id=uid).usuario
+        except:
+            selected = usuarios[0].usuario
     elif len(usuarios) > 0:
         selected = usuarios[0].usuario
 

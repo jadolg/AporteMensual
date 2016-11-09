@@ -1,9 +1,9 @@
 {% extends "Base.html" %}
 
 {% block body %}
-
-    <div class="col-md-5">
-    <h4>Usuarios que han pagado este mes</h4>
+<div class="col-md-10 container">
+    <div class="col-md-7">
+        <h4>Usuarios que han pagado este mes</h4>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -14,32 +14,38 @@
             <tbody>
             {% for usuario in aportes %}
                 <tr>
-                    <td><i class="fa fa-user"/>  {{ usuario.usuario }}</td>
-                    <td><i class="fa fa-dollar"/>  {{ usuario.aporte }} </td>
+                    <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
+                    <td><i class="fa fa-dollar"/> {{ usuario.aporte }} </td>
                     {% if user.is_staff %}
-                        <td><div class="btn btn-default" title="Deshacer" onclick="showDialog('/undo/{{ usuario.id }}','Desea deshacer este aporte?');"><i class="fa fa-undo"/></div></td>
+                        <td>
+                            <div class="btn btn-default" title="Deshacer"
+                                 onclick="showDialog('/undo/{{ usuario.id }}','Desea deshacer este aporte?');"><i
+                                    class="fa fa-undo"></i></div>
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
-       <div class="col-md-5">
-       <h4>Usuarios que han NO pagado este mes</h4>
+    <div class="col-md-4">
+        <h4>Usuarios que han NO pagado este mes</h4>
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>Usuario</th>
-                <th>Aporte</th>
+                {#                <th>Aporte</th>#}
             </tr>
             </thead>
             <tbody>
             {% for usuario in noaportes %}
                 <tr>
-                    <td><i class="fa fa-user"/>  {{ usuario.usuario }}</td>
-                    <td><i class="fa fa-dollar"/> {{ usuario.aporte }}</td>
+                    <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
+                    {#                    <td><i class="fa fa-dollar"/> {{ usuario.aporte }}</td>#}
                     {% if user.is_staff %}
-                        <td><div class="btn btn-default" title="Pagar" onclick="showDialog('/pagar/{{ usuario.id }}','Desea pagar este aporte?');"><i class="fa fa-dollar"/></div></td>
+                        <td>
+                            <a class="btn btn-default" title="Pagar" href="/pagar/{{ usuario.id }}"><i class="fa fa-dollar"></i></a>
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}
@@ -47,10 +53,11 @@
         </table>
     </div>
     <div class="col-md-1"></div>
-{#    <div class="col-md-12" >#}
-{#        <div class="col-md-5"></div>#}
-{#        <div class="col-md-2" style="border: #5e5e5e solid 1px; text-align: center; border-radius: 10px"><h4>Total este mes: {{ total_mes }}</h4></div>#}
-{#        <div class="col-md-5"></div>#}
-{#    </div>#}
+    </div>
+    {#    <div class="col-md-12" >#}
+    {#        <div class="col-md-5"></div>#}
+    {#        <div class="col-md-2" style="border: #5e5e5e solid 1px; text-align: center; border-radius: 10px"><h4>Total este mes: {{ total_mes }}</h4></div>#}
+    {#        <div class="col-md-5"></div>#}
+    {#    </div>#}
 
 {% endblock %}
