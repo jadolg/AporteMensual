@@ -1,38 +1,53 @@
 {% extends 'Base.html' %}
 
 {% block body %}
-    <div class="col-md-5" style="margin-top: 20px; text-align: center; border-radius: 10px">
+    <div class="container">
+        <div class="col-md-6" style="margin-top: 10px; text-align: center; border-radius: 10px">
+            <div class="panel panel-primary" style="margin-top: 10px">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Usuarios</h4>
+                                <div class="pull-right">
+                                    <span class="clickable filter" data-toggle="tooltip" title="Filtrar" data-container="body" id="container">
+                                        <i class="glyphicon glyphicon-filter"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="Filtrar" />
+                            </div>
+                            <table class="table table-hover" id="dev-table">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Rango</th>
+                                        <th>Cantidad de Usuarios</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for usuario in usuarios|dictsort:"rango" %}
+                                    <tr>
+                                        <td>{{ usuario.usuario }}</td>
+                                        <td>{{ usuario.rango }}</td>
+                                        <td>{{ usuario.cant_usuarios }}</td>
+                                        <td><div class="btn btn-default" onclick="showDialog('/delete/{{ usuario.id }}','Está seguro que desea eliminar este usuario?');"><i class="fa fa-minus"></i></div></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <h3><i class="fa fa-user"></i> Adicionar un usuario</h3>
+                <form method="post" name="formulario">
+                    {% csrf_token %}
+                    <div class="form-group"><input class="form-control" type="text" name="user" placeholder="usuario"></div>
+                    <div class="form-group"><input class="form-control" type="text" name="rango" placeholder="10.24.17"></div>
+                    <div class="form-group"><input class="form-control" type="number" name="cant_usuarios" placeholder="1" value="1"></div>
+                    <div class="form-group"><input type="submit" class="btn btn-primary" value="Adicionar"></div>
+                </form>
+            </div>
+        </div>
 
-    <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Rango</th>
-                <th>Cantidad de Usuarios</th>
-                <th>Eliminar</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for usuario in usuarios|dictsort:"rango" %}
-                <tr>
-                    <td>{{ usuario.usuario }}</td>
-                    <td>{{ usuario.rango }}</td>
-                    <td>{{ usuario.cant_usuarios }}</td>
-                    <td><div class="btn btn-default" onclick="showDialog('/delete/{{ usuario.id }}','Está seguro que desea eliminar este usuario?');"><i class="fa fa-minus"></i></div></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-2">
-    <h3><i class="fa fa-user"></i> Adicionar un usuario</h3>
-        <form method="post" name="formulario">
-            {% csrf_token %}
-            <div class="form-group"><input class="form-control" type="text" name="user" placeholder="usuario"></div>
-            <div class="form-group"><input class="form-control" type="text" name="rango" placeholder="10.24.17"></div>
-            <div class="form-group"><input class="form-control" type="number" name="cant_usuarios" placeholder="1" value="1"></div>
-            <div class="form-group"><input type="submit" class="btn btn-primary" value="Adicionar"></div>
-        </form>
-    </div>
-    <div class="col-md-5"></div>
 {% endblock %}

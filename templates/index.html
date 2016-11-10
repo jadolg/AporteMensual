@@ -2,57 +2,82 @@
 
 {% block body %}
 <div class="col-md-10 container">
-    <div class="col-md-7">
-        <h4>Usuarios que han pagado este mes</h4>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Aporte</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for usuario in aportes %}
-                <tr>
-                    <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
-                    <td><i class="fa fa-dollar"/> {{ usuario.aporte }} </td>
-                    {% if user.is_staff %}
-                        <td>
-                            <div class="btn btn-default" title="Deshacer"
-                                 onclick="showDialog('/undo/{{ usuario.id }}','Desea deshacer este aporte?');"><i
-                                    class="fa fa-undo"></i></div>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="col-md-6" style="margin-top: 10px">
+        <div class="panel panel-primary" style="margin-top: 10px">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Usuarios que han pagado este mes</h4>
+                            <div class="pull-right">
+                                <span class="clickable filter" data-toggle="tooltip" title="Filtrar" data-container="body" id="container">
+                                    <i class="glyphicon glyphicon-filter"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="Filtrar" />
+                        </div>
+                        <table class="table table-hover" id="dev-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Aporte</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for usuario in aportes %}
+                                <tr>
+                                    <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
+                                    <td><i class="fa fa-dollar"/> {{ usuario.aporte }} </td>
+                                    {% if user.is_staff %}
+                                        <td>
+                                            <div class="btn btn-default" title="Deshacer"
+                                                 onclick="showDialog('/undo/{{ usuario.id }}','Desea deshacer este aporte?');"><i
+                                                    class="fa fa-undo"></i></div>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+        </div>
+
+    <div class="col-md-5" style="margin-top: 10px">
+
+        <div class="panel panel-danger" style="margin-top: 10px">
+					<div class="panel-heading">
+						<h3 class="panel-title">Usuarios que NO han pagado este mes</h3>
+						<div class="pull-right">
+							<span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
+								<i class="glyphicon glyphicon-filter"></i>
+							</span>
+						</div>
+					</div>
+					<div class="panel-body">
+						<input type="text" class="form-control" id="task-table-filter" data-action="filter" data-filters="#task-table" placeholder="Filter Tasks" />
+					</div>
+					<table class="table table-hover" id="task-table">
+						<thead>
+							<tr>
+								<th>Usuario</th>
+							</tr>
+						</thead>
+						<tbody>
+                            {% for usuario in noaportes %}
+                                <tr>
+                                    <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
+
+                                    {% if user.is_staff %}
+                                        <td>
+                                            <a class="btn btn-default" title="Pagar" href="/pagar/{{ usuario.id }}"><i class="fa fa-dollar"></i></a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+						</tbody>
+					</table>
+				</div>
+
     </div>
-    <div class="col-md-4">
-        <h4>Usuarios que han NO pagado este mes</h4>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Usuario</th>
-                {#                <th>Aporte</th>#}
-            </tr>
-            </thead>
-            <tbody>
-            {% for usuario in noaportes %}
-                <tr>
-                    <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
-                    {#                    <td><i class="fa fa-dollar"/> {{ usuario.aporte }}</td>#}
-                    {% if user.is_staff %}
-                        <td>
-                            <a class="btn btn-default" title="Pagar" href="/pagar/{{ usuario.id }}"><i class="fa fa-dollar"></i></a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-1"></div>
     </div>
     {#    <div class="col-md-12" >#}
     {#        <div class="col-md-5"></div>#}

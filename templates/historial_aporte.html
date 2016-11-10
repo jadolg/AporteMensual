@@ -1,43 +1,50 @@
 {% extends 'Base.html' %}
 
 {% block body %}
-
-    <div class="col-md-1"></div>
-
-    <div class="col-md-6" style="margin-top: 20px; text-align: center; border-radius: 10px">
-        {% if aporte|length == 0 %}
-            <div style="margin-top: 10px">No se han registrado aportes</div>
-        {% endif %}
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Enero</th>
-                <th>Febrero</th>
-                <th>Marzo</th>
-                <th>Abril</th>
-                <th>Mayo</th>
-                <th>Junio</th>
-                <th>Julio</th>
-                <th>Agosto</th>
-                <th>Septiembre</th>
-                <th>Octubre</th>
-                <th>Noviembre</th>
-                <th>Diciembre</th>
-                <th><b>Total</b></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in aporte %}
-                <tr>
-                {% for auser in item %}
-                    <td>{{ auser }}</td>
-                {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+<div class="container col-md-10">
+    <div class="col-md-12" style="margin-top: 10px; text-align: center; border-radius: 10px">
+        <div class="panel panel-primary" style="margin-top: 10px">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Historial de aportes</h4>
+                            <div class="pull-right">
+                                <span class="clickable filter" data-toggle="tooltip" title="Filtrar" data-container="body" id="container">
+                                    <i class="glyphicon glyphicon-filter"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="Filtrar" />
+                        </div>
+                        <table class="table table-hover" id="dev-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Enero</th>
+                                    <th>Febrero</th>
+                                    <th>Marzo</th>
+                                    <th>Abril</th>
+                                    <th>Mayo</th>
+                                    <th>Junio</th>
+                                    <th>Julio</th>
+                                    <th>Agosto</th>
+                                    <th>Septiembre</th>
+                                    <th>Octubre</th>
+                                    <th>Noviembre</th>
+                                    <th>Diciembre</th>
+                                    <th><b>Total</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in aporte %}
+                                    <tr>
+                                    {% for auser in item %}
+                                        <td>{{ auser }}</td>
+                                    {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+        </div>
     </div>
-
-    <div class="col-md-3"></div>
 {% endblock %}
