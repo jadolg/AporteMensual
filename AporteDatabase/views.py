@@ -46,7 +46,7 @@ def historial_aporte(request):
     result = []
     row_total = ["Total", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for usuario in AporteMes.objects.all():
-        aux = [usuario.usuario, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0]
+        aux = [usuario.usuario, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ,'-', '-', 0]
         total = 0
         for historial in HistorialPagos.objects.filter(usuario=usuario.usuario,ano=date.today().year).order_by('mes'):
             aux[historial.mes] = historial.aporte
