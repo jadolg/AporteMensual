@@ -7,7 +7,11 @@ register = template.Library()
 
 @register.simple_tag
 def get_aporte():
-    return AporteTotal.objects.all()[0].aporte
+    try:
+        return AporteTotal.objects.all()[0].aporte
+    except:
+        AporteTotal(aporte=0).save()
+        return AporteTotal.objects.all()[0].aporte
 
 
 @register.simple_tag
