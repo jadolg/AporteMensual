@@ -44,17 +44,17 @@ def delete_user(request,uid):
 
 def historial_aporte(request):
     result = []
-    row_total = ["Total", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    row_total = [["Total", '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-']]
     for usuario in AporteMes.objects.all():
-        aux = [usuario.usuario, '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ,'-', '-', 0]
+        aux = [[usuario.usuario,'-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], [0, '-']]
         total = 0
         for historial in HistorialPagos.objects.filter(usuario=usuario.usuario,ano=date.today().year).order_by('mes'):
-            aux[historial.mes] = historial.aporte
+            aux[historial.mes] = [historial.aporte, historial.comentarios]
             total += historial.aporte
-            row_total[historial.mes] += historial.aporte
+            row_total[historial.mes][0] += historial.aporte
 
-        aux[13] = total
-        row_total[13] += total
+        aux[13][0] = total
+        row_total[13][0] += total
         result.append(aux)
 
     result.append(row_total)
@@ -72,10 +72,13 @@ def pagar(request, uid=None):
             else:
                 aporte = AporteMes.objects.get(id=int(request.POST['user']))
                 aporte.aporte = float(request.POST['cantidad'])
+                if request.POST.has_key('comentarios'):
+                    aporte.comentarios = request.POST['comentarios']
                 aporte.save()
 
                 total = AporteTotal.objects.all()[0]
                 total.aporte += float(request.POST['cantidad'])
+
                 total.save()
                 messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
                 next_id = 0
@@ -105,14 +108,18 @@ def pagar(request, uid=None):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def restart(request):
-    if len(HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)) > 0:
-        messages.add_message(request, messages.ERROR, "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
-    else:
-        for i in AporteMes.objects.all():
-            HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year).save()
-            i.aporte = 0
-            i.save()
-        messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
+    # if len(HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)) > 0:
+    #     messages.add_message(request, messages.ERROR, "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
+    # else:
+    for i in AporteMes.objects.all():
+        if i.comentarios:
+            comentarios = i.comentarios
+        else:
+            comentarios = '-'
+        HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year, comentarios=comentarios).save()
+        i.aporte = 0
+        i.save()
+    messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
 
     return HttpResponseRedirect('/')
 

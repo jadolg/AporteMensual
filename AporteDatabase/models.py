@@ -8,6 +8,7 @@ from django.db import models
 @python_2_unicode_compatible
 class AporteMes(models.Model):
     usuario = models.CharField(max_length=100)
+    comentarios = models.CharField(max_length=1000, null=True)
     rango = models.CharField(max_length=100)
     cant_usuarios = models.IntegerField(default=0)
     aporte = models.FloatField(default=0)
@@ -27,7 +28,7 @@ class AporteTotal(models.Model):
 @python_2_unicode_compatible
 class HistorialGastos(models.Model):
     cantidad = models.FloatField(default=0)
-    motivo = models.CharField(max_length=10000)
+    comentarios = models.CharField(max_length=1000, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -37,6 +38,7 @@ class HistorialGastos(models.Model):
 @python_2_unicode_compatible
 class HistorialPagos(models.Model):
     usuario = models.CharField(max_length=100)
+    comentarios = models.CharField(max_length=1000)
     aporte = models.FloatField(default=0)
     mes = models.IntegerField(default=0)
     ano = models.IntegerField(default=0)

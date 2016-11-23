@@ -38,7 +38,7 @@
                                 {% for item in aporte %}
                                     <tr>
                                     {% for auser in item %}
-                                        <td>{{ auser }}</td>
+                                        <td>{{ auser.0 }} {% if auser.1 != 'None' and auser.1 != '' and auser.1 != '-' %}<i class="fa fa-sticky-note btn" onclick="showPopUpDialog('{{ auser.1 }}');"></i>{% endif %}</td>
                                     {% endfor %}
                                     </tr>
                                 {% endfor %}

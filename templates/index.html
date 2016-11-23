@@ -32,6 +32,12 @@
                                             <div class="btn btn-default" title="Deshacer"
                                                  onclick="showDialog('/undo/{{ usuario.id }}','Desea deshacer este aporte?');"><i
                                                     class="fa fa-undo"></i></div>
+                                        {% if  usuario.comentarios %}
+                                                <div class="btn btn-default" title="Comentarios"
+                                                     onclick="showPopUpDialog('{{ usuario.comentarios }}');"><i
+                                                        class="fa fa-sticky-note"></i></div>
+
+                                        {% endif %}
                                         </td>
                                     {% endif %}
                                 </tr>

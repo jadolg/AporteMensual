@@ -85,6 +85,21 @@
                 }
             });
         };
+    var showPopUpDialog = function (msg) {
+            bootbox.dialog({
+                message: msg,
+                title: "Alerta",
+                buttons: {
+                    success: {
+                        label: "Aceptar",
+                        className: "btn-primary",
+                        callback: function () {
+{#                            window.open(url, "_parent");#}
+                        }
+                    }
+                }
+            });
+        };
     </script>
 {% endblock %}
 
