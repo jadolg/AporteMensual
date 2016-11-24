@@ -98,7 +98,7 @@ def pagar(request, uid=None):
         try:
             selected = AporteMes.objects.get(id=uid).usuario
         except:
-            selected = usuarios[0].usuario
+            selected = None
     elif len(usuarios) > 0:
         selected = usuarios[0].usuario
 
