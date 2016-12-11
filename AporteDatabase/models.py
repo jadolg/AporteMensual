@@ -28,7 +28,7 @@ class AporteTotal(models.Model):
 @python_2_unicode_compatible
 class HistorialGastos(models.Model):
     cantidad = models.FloatField(default=0)
-    comentarios = models.CharField(max_length=1000, null=True)
+    motivo = models.CharField(max_length=10000)
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -38,7 +38,7 @@ class HistorialGastos(models.Model):
 @python_2_unicode_compatible
 class HistorialPagos(models.Model):
     usuario = models.CharField(max_length=100)
-    comentarios = models.CharField(max_length=1000)
+    comentarios = models.CharField(max_length=1000, null=True)
     aporte = models.FloatField(default=0)
     mes = models.IntegerField(default=0)
     ano = models.IntegerField(default=0)
