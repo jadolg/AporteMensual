@@ -27,19 +27,19 @@
                                 <tr>
                                     <td><i class="fa fa-user"/> {{ usuario.usuario }}</td>
                                     <td><i class="fa fa-dollar"/> {{ usuario.aporte }} </td>
+                                <td>
                                     {% if user.is_staff %}
-                                        <td>
                                             <div class="btn btn-default" title="Deshacer"
                                                  onclick="showDialog('/undo/{{ usuario.id }}','Desea deshacer este aporte?');"><i
                                                     class="fa fa-undo"></i></div>
+                                    {% endif %}
                                         {% if  usuario.comentarios %}
                                                 <div class="btn btn-default" title="Comentarios"
                                                      onclick="showPopUpDialog('{{ usuario.comentarios }}');"><i
                                                         class="fa fa-sticky-note"></i></div>
 
                                         {% endif %}
-                                        </td>
-                                    {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
