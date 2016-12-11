@@ -82,10 +82,11 @@ def pagar(request, uid=None):
                 total.save()
                 messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
                 next_id = 0
-                for i in xrange(0,len(AporteMes.objects.all())):
-                    if aporte == AporteMes.objects.all()[i] and i != len(AporteMes.objects.all())-1:
+                aportes = AporteMes.objects.all()
+                for i in xrange(0,len(aportes)):
+                    if aporte == aportes[i] and i != len(aportes)-1:
                         try:
-                            next_id =  AporteMes.objects.all()[i+1].id
+                            next_id = aportes[i+1].id
                         finally:
                             break
                 return HttpResponseRedirect('/pagar/'+str(next_id))
@@ -108,18 +109,18 @@ def pagar(request, uid=None):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def restart(request):
-    # if len(HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)) > 0:
-    #     messages.add_message(request, messages.ERROR, "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
-    # else:
-    for i in AporteMes.objects.all():
-        if i.comentarios:
-            comentarios = i.comentarios
-        else:
-            comentarios = '-'
-        HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year, comentarios=comentarios).save()
-        i.aporte = 0
-        i.save()
-    messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
+    if len(HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)) > 0:
+        messages.add_message(request, messages.ERROR, "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
+    else:
+        for i in AporteMes.objects.all():
+            if i.comentarios:
+                comentarios = i.comentarios
+            else:
+                comentarios = '-'
+            HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year, comentarios=comentarios).save()
+            i.aporte = 0
+            i.save()
+        messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
 
     return HttpResponseRedirect('/')
 
