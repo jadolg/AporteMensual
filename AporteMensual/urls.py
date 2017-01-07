@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^restart$', restart, name='restart'),
     url(r'^gastos$', gastos, name='gastos'),
     url(r'^historial$', historial_aporte, name='historial_aporte'),
+    url(r'^historial/(?P<year>[0-9]+)$', historial_aporte, name='historial_aporte'),
     url(r'^subsanar_gasto/(?P<id>[0-9]+)', subsanar_gasto, name='subsanar_gasto'),
 ]

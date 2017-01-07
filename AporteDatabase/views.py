@@ -42,16 +42,28 @@ def delete_user(request,uid):
     return HttpResponseRedirect('/adduser')
 
 
-def historial_aporte(request):
+def historial_aporte(request, year=None):
     result = []
     row_total = [["Total", '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-']]
     for usuario in AporteMes.objects.all():
         aux = [[usuario.usuario,'-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], [0, '-']]
         total = 0
-        for historial in HistorialPagos.objects.filter(usuario=usuario.usuario,ano=date.today().year).order_by('mes'):
+        if year:
+            ano = year
+        else:
+            ano = date.today().year
+
+        for historial in HistorialPagos.objects.filter(usuario=usuario.usuario,ano=ano).order_by('mes'):
             aux[historial.mes] = [historial.aporte, historial.comentarios]
             total += historial.aporte
             row_total[historial.mes][0] += historial.aporte
+
+        anhos = []
+        for i in HistorialPagos.objects.values('ano').distinct():
+            anhos.append(i['ano'])
+
+        if not date.today().year in anhos:
+            anhos.append(date.today().year)
 
         aux[13][0] = total
         row_total[13][0] += total
@@ -59,7 +71,7 @@ def historial_aporte(request):
 
     result.append(row_total)
 
-    return render(request,"historial_aporte.html", {"aporte":result})
+    return render(request,"historial_aporte.html", {"aporte":result, "anhos":anhos})
 
 
 @login_required
