@@ -11,6 +11,7 @@ from django.contrib import messages
 
 def index(request):
     pagado = AporteMes.objects.filter(aporte__gt=0)
+
     total_mes = 0.0
     for i in pagado:
         total_mes += i.aporte
@@ -45,15 +46,16 @@ def delete_user(request,uid):
 def historial_aporte(request, year=None):
     result = []
     row_total = [["Total", '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-']]
-    for usuario in AporteMes.objects.all():
-        aux = [[usuario.usuario,'-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], [0, '-']]
+
+    for usuario in HistorialPagos.objects.values('usuario').distinct():
+        aux = [[usuario['usuario'],'-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], [0, '-']]
         total = 0
         if year:
             ano = year
         else:
             ano = date.today().year
 
-        for historial in HistorialPagos.objects.filter(usuario=usuario.usuario,ano=ano).order_by('mes'):
+        for historial in HistorialPagos.objects.filter(usuario=usuario['usuario'],ano=ano).order_by('mes'):
             aux[historial.mes] = [historial.aporte, historial.comentarios]
             total += historial.aporte
             row_total[historial.mes][0] += historial.aporte
