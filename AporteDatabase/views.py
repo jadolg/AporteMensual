@@ -10,13 +10,20 @@ from AporteDatabase.models import AporteMes, AporteTotal, HistorialGastos, Histo
 from django.contrib import messages
 
 def index(request):
-    pagado = AporteMes.objects.filter(aporte__gt=0)
-
+    # pagado = AporteMes.objects.filter(aporte__gt=0)
+    pagado = HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)
+    nombres_pagados = []
     total_mes = 0.0
     for i in pagado:
+        nombres_pagados.append(i.usuario)
         total_mes += i.aporte
 
-    return render(request,"index.html", {"total_mes":total_mes,"aportes":pagado, "noaportes":AporteMes.objects.filter(aporte=0)})
+    nopagado = []
+    for i in AporteMes.objects.all():
+        if i.usuario not in nombres_pagados:
+            nopagado.append(i)
+
+    return render(request,"index.html", {"total_mes":total_mes,"aportes":pagado, "noaportes":nopagado})
 
 
 @login_required
@@ -80,21 +87,29 @@ def historial_aporte(request, year=None):
 def pagar(request, uid=None):
     selected = 0
     if request.method == 'POST':
-        if request.POST.has_key('user') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '':
+        if request.POST.has_key('user') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '' and request.POST.has_key('mes') and request.POST.has_key('anho'):
             if float(request.POST['cantidad']) <= 0:
                 messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
             else:
                 aporte = AporteMes.objects.get(id=int(request.POST['user']))
-                aporte.aporte = float(request.POST['cantidad'])
+
                 if request.POST.has_key('comentarios'):
                     aporte.comentarios = request.POST['comentarios']
-                aporte.save()
+                    comentarios = request.POST['comentarios']
+                else:
+                    comentarios = '-'
 
-                total = AporteTotal.objects.all()[0]
-                total.aporte += float(request.POST['cantidad'])
+                if len(HistorialPagos.objects.filter(mes=int(request.POST['mes']), ano=int(request.POST['anho']), usuario=aporte.usuario)) == 0:
+                    HistorialPagos(usuario=aporte.usuario, aporte=float(request.POST['cantidad']), mes=int(request.POST['mes']), ano=int(request.POST['anho']),
+                                   comentarios=comentarios).save()
 
-                total.save()
-                messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
+                    total = AporteTotal.objects.all()[0]
+                    total.aporte += float(request.POST['cantidad'])
+
+                    total.save()
+                    messages.add_message(request, messages.INFO, "Aporte registrado correctamente")
+                else:
+                    messages.add_message(request, messages.ERROR, "Este usuario ya ha pagado este mes")
                 next_id = 0
                 aportes = AporteMes.objects.all()
                 for i in xrange(0,len(aportes)):
@@ -107,7 +122,7 @@ def pagar(request, uid=None):
         else:
             messages.add_message(request, messages.ERROR, "Datos insuficientes para realizar aporte")
 
-    usuarios = AporteMes.objects.filter(aporte=0)
+    usuarios = AporteMes.objects.all()
 
     if uid is not None:
         try:
@@ -117,7 +132,7 @@ def pagar(request, uid=None):
     elif len(usuarios) > 0:
         selected = usuarios[0].usuario
 
-    return render(request, 'pagar.html', {'selected':selected,'usuarios':usuarios})
+    return render(request, 'pagar.html', {'selected':selected,'usuarios':usuarios, 'mes': date.today().month, 'anhos': [date.today().year - 1, date.today().year, date.today().year + 1], 'currenty': date.today().year })
 
 
 @login_required
@@ -177,12 +192,11 @@ def subsanar_gasto(request, id):
 @login_required
 def undo(request, uid):
     try:
-        aporte = AporteMes.objects.get(id=uid)
+        aporte = HistorialPagos.objects.get(id=uid)
         total = AporteTotal.objects.all()[0]
         total.aporte -= aporte.aporte
         total.save()
-        aporte.aporte = 0
-        aporte.save()
+        aporte.delete()
         messages.add_message(request, messages.INFO, "El aporte ha sido retirado")
     except:
         messages.add_message(request, messages.ERROR, "Error intentando deshacer este aporte")

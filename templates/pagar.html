@@ -2,20 +2,20 @@
 
 {% block body %}
     <div class="col-md-5" style="margin-top: 20px">
-        <div class="col-md-12">
-            <div class="col-md-5"></div>
-            <div class="col-md-2">
-                <div class="btn btn-danger" onclick="showDialog('/restart','Está seguro que desea reiniciar el mes?');">Reiniciar Mes</div>
-            </div>
-            <div class="col-md-5"></div>
-        </div>
+{#        <div class="col-md-12">#}
+{#            <div class="col-md-5"></div>#}
+{#            <div class="col-md-2">#}
+{#                <div class="btn btn-danger" onclick="showDialog('/restart','Está seguro que desea reiniciar el mes?');">Reiniciar Mes</div>#}
+{#            </div>#}
+{#            <div class="col-md-5"></div>#}
+{#        </div>#}
     </div>
     <div class="col-md-2">
     <h3><i class="fa fa-money"></i> Pagar aporte</h3>
         <form method="post" name="formulario">
             {% csrf_token %}
             <div class="form-group">
-                <select name="user">
+                <select name="user" class="form-control" >
                     {% for usuario in usuarios %}
                         {% if usuario.usuario == selected %}
                             <option selected style="margin-bottom: 10px;" value="{{ usuario.id }}">{{ usuario.usuario }}({{ usuario.cant_usuarios }} usuarios) ({{ usuario.rango }})</option>
@@ -27,6 +27,30 @@
             </div>
             <div class="form-group"><input class="form-control" type="text" name="cantidad" placeholder="1" value="1"></div>
             <div class="form-group"><textarea class="form-control" type="text" name="comentarios" placeholder="escriba un comentario sobre este pago" value=""></textarea></div>
+            <div class="form-group">
+                <select class="form-control" name="mes">
+                    <option value="1" {% if mes == 1 %} selected {% endif %}>Enero</option>
+                    <option value="2" {% if mes == 2 %} selected {% endif %}>Febrero</option>
+                    <option value="3" {% if mes == 3 %} selected {% endif %}>Marzo</option>
+                    <option value="4" {% if mes == 4 %} selected {% endif %}>Abril</option>
+                    <option value="5" {% if mes == 5 %} selected {% endif %}>Mayo</option>
+                    <option value="6" {% if mes == 6 %} selected {% endif %}>Junio</option>
+                    <option value="7" {% if mes == 7 %} selected {% endif %}>Julio</option>
+                    <option value="8" {% if mes == 8 %} selected {% endif %}>Agosto</option>
+                    <option value="9" {% if mes == 9 %} selected {% endif %}>Septiembre</option>
+                    <option value="10" {% if mes == 10 %} selected {% endif %}>Octubre</option>
+                    <option value="11" {% if mes == 11 %} selected {% endif %}>Noviembre</option>
+                    <option value="12" {% if mes == 12 %} selected {% endif %}>Diciembre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control" name="anho">
+                    {% for anho in anhos %}
+                        <option {% if anho ==  currenty%} selected {% endif %} value="{{ anho }}">{{ anho }}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
             <div class="form-group"><input type="submit" class="btn btn-primary" value="Pagar"></div>
         </form>
     </div>
