@@ -31,8 +31,8 @@ def index(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def add_user(request):
-    if request.method == 'POST' and request.POST.has_key('user') and request.POST.has_key(
-            'rango') and request.POST.has_key('cant_usuarios') and request.POST['cant_usuarios'] != '':
+    if request.method == 'POST' and 'user' in request.POST and 'rango' in request.POST \
+            and 'cant_usuarios' in request.POST and request.POST['cant_usuarios'] != '':
         if len(AporteMes.objects.filter(usuario=request.POST['user'])) == 0:
             AporteMes(usuario=request.POST['user'], rango=request.POST['rango'],
                       cant_usuarios=int(request.POST['cant_usuarios'])).save()
@@ -95,14 +95,14 @@ def historial_aporte(request, year=None):
 def pagar(request, uid=None):
     selected = 0
     if request.method == 'POST':
-        if request.POST.has_key('user') and request.POST.has_key('cantidad') and request.POST[
-            'cantidad'] != '' and request.POST.has_key('mes') and request.POST.has_key('anho'):
+        if 'user' in request.POST and 'cantidad' in request.POST and request.POST['cantidad'] != '' \
+                and 'mes' in request.POST and 'anho' in request.POST:
             if float(request.POST['cantidad']) <= 0:
                 messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
             else:
                 aporte = AporteMes.objects.get(id=int(request.POST['user']))
 
-                if request.POST.has_key('comentarios'):
+                if 'comentarios' in request.POST:
                     aporte.comentarios = request.POST['comentarios']
                     comentarios = request.POST['comentarios']
                 else:
@@ -123,7 +123,7 @@ def pagar(request, uid=None):
                     messages.add_message(request, messages.ERROR, "Este usuario ya ha pagado este mes")
                 next_id = 0
                 aportes = AporteMes.objects.all()
-                for i in xrange(0, len(aportes)):
+                for i in range(0, len(aportes)):
                     if aporte == aportes[i] and i != len(aportes) - 1:
                         try:
                             next_id = aportes[i + 1].id
@@ -174,8 +174,8 @@ def gastos(request):
     if request.method == 'POST':
         if not request.user.is_staff:
             messages.add_message(request, messages.ERROR, "Solo un administrador puede introducir gastos")
-        elif request.POST.has_key('motivo') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '' and \
-                        request.POST['motivo'] != '':
+        elif 'motivo' in request.POST and 'cantidad' in request.POST and request.POST['cantidad'] != '' \
+                and request.POST['motivo'] != '':
             if float(request.POST['cantidad']) <= 0:
                 messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
             else:
@@ -225,7 +225,7 @@ def login_user(request):
         messages.add_message(request, messages.INFO, "Ya se encuentra autenticado")
         return HttpResponseRedirect('/')
     if request.method == 'POST':
-        if request.POST.has_key('user') and request.POST.has_key('password'):
+        if 'user' in request.POST and 'password' in request.POST:
             user = authenticate(username=request.POST['user'], password=request.POST['password'])
 
             if user is not None:
