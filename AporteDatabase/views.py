@@ -25,27 +25,30 @@ def index(request):
         if i.usuario not in nombres_pagados:
             nopagado.append(i)
 
-    return render(request,"index.html", {"total_mes":total_mes,"aportes":pagado, "noaportes":nopagado})
+    return render(request, "index.html", {"total_mes": total_mes, "aportes": pagado, "noaportes": nopagado})
 
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def add_user(request):
-    if request.method == 'POST' and request.POST.has_key('user') and request.POST.has_key('rango') and request.POST.has_key('cant_usuarios') and request.POST['cant_usuarios'] != '':
+    if request.method == 'POST' and request.POST.has_key('user') and request.POST.has_key(
+            'rango') and request.POST.has_key('cant_usuarios') and request.POST['cant_usuarios'] != '':
         if len(AporteMes.objects.filter(usuario=request.POST['user'])) == 0:
-            AporteMes(usuario=request.POST['user'], rango=request.POST['rango'],cant_usuarios=int(request.POST['cant_usuarios'])).save()
-            messages.add_message(request, messages.INFO, "Usuario "+request.POST['user']+" creado satisfactoriamente")
+            AporteMes(usuario=request.POST['user'], rango=request.POST['rango'],
+                      cant_usuarios=int(request.POST['cant_usuarios'])).save()
+            messages.add_message(request, messages.INFO,
+                                 "Usuario " + request.POST['user'] + " creado satisfactoriamente")
         else:
-            messages.add_message(request, messages.ERROR,"Ya existe un usuario con este nombre")
-    return render(request, 'adduser.html', {'usuarios':AporteMes.objects.all()})
+            messages.add_message(request, messages.ERROR, "Ya existe un usuario con este nombre")
+    return render(request, 'adduser.html', {'usuarios': AporteMes.objects.all()})
 
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def delete_user(request,uid):
+def delete_user(request, uid):
     try:
         AporteMes.objects.get(id=uid).delete()
-        messages.add_message(request, messages.INFO,"Usuario eliminado satisfactoriamente")
+        messages.add_message(request, messages.INFO, "Usuario eliminado satisfactoriamente")
     except:
         messages.add_message(request, messages.INFO, "Error eliminando usuario")
 
@@ -56,17 +59,19 @@ def delete_user(request,uid):
 def historial_aporte(request, year=None):
     result = []
     anhos = []
-    row_total = [["Total", '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-']]
+    row_total = [["Total", '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'],
+                 [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-']]
 
     for usuario in HistorialPagos.objects.values('usuario').distinct():
-        aux = [[usuario['usuario'],'-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], [0, '-']]
+        aux = [[usuario['usuario'], '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'],
+               ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], ['-', '-'], [0, '-']]
         total = 0
         if year:
             ano = year
         else:
             ano = date.today().year
 
-        for historial in HistorialPagos.objects.filter(usuario=usuario['usuario'],ano=ano).order_by('mes'):
+        for historial in HistorialPagos.objects.filter(usuario=usuario['usuario'], ano=ano).order_by('mes'):
             aux[historial.mes] = [historial.aporte, historial.comentarios]
             total += historial.aporte
             row_total[historial.mes][0] += historial.aporte
@@ -83,14 +88,15 @@ def historial_aporte(request, year=None):
 
     result.append(row_total)
 
-    return render(request,"historial_aporte.html", {"aporte":result, "anhos":anhos})
+    return render(request, "historial_aporte.html", {"aporte": result, "anhos": anhos})
 
 
 @login_required
 def pagar(request, uid=None):
     selected = 0
     if request.method == 'POST':
-        if request.POST.has_key('user') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '' and request.POST.has_key('mes') and request.POST.has_key('anho'):
+        if request.POST.has_key('user') and request.POST.has_key('cantidad') and request.POST[
+            'cantidad'] != '' and request.POST.has_key('mes') and request.POST.has_key('anho'):
             if float(request.POST['cantidad']) <= 0:
                 messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
             else:
@@ -102,8 +108,10 @@ def pagar(request, uid=None):
                 else:
                     comentarios = '-'
 
-                if len(HistorialPagos.objects.filter(mes=int(request.POST['mes']), ano=int(request.POST['anho']), usuario=aporte.usuario)) == 0:
-                    HistorialPagos(usuario=aporte.usuario, aporte=float(request.POST['cantidad']), mes=int(request.POST['mes']), ano=int(request.POST['anho']),
+                if len(HistorialPagos.objects.filter(mes=int(request.POST['mes']), ano=int(request.POST['anho']),
+                                                     usuario=aporte.usuario)) == 0:
+                    HistorialPagos(usuario=aporte.usuario, aporte=float(request.POST['cantidad']),
+                                   mes=int(request.POST['mes']), ano=int(request.POST['anho']),
                                    comentarios=comentarios).save()
 
                     total = AporteTotal.objects.all()[0]
@@ -115,13 +123,13 @@ def pagar(request, uid=None):
                     messages.add_message(request, messages.ERROR, "Este usuario ya ha pagado este mes")
                 next_id = 0
                 aportes = AporteMes.objects.all()
-                for i in xrange(0,len(aportes)):
-                    if aporte == aportes[i] and i != len(aportes)-1:
+                for i in xrange(0, len(aportes)):
+                    if aporte == aportes[i] and i != len(aportes) - 1:
                         try:
-                            next_id = aportes[i+1].id
+                            next_id = aportes[i + 1].id
                         finally:
                             break
-                return HttpResponseRedirect('/pagar/'+str(next_id))
+                return HttpResponseRedirect('/pagar/' + str(next_id))
         else:
             messages.add_message(request, messages.ERROR, "Datos insuficientes para realizar aporte")
 
@@ -135,21 +143,25 @@ def pagar(request, uid=None):
     elif len(usuarios) > 0:
         selected = usuarios[0].usuario
 
-    return render(request, 'pagar.html', {'selected':selected,'usuarios':usuarios, 'mes': date.today().month, 'anhos': [date.today().year - 1, date.today().year, date.today().year + 1], 'currenty': date.today().year })
+    return render(request, 'pagar.html', {'selected': selected, 'usuarios': usuarios, 'mes': date.today().month,
+                                          'anhos': [date.today().year - 1, date.today().year, date.today().year + 1],
+                                          'currenty': date.today().year})
 
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def restart(request):
     if len(HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)) > 0:
-        messages.add_message(request, messages.ERROR, "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
+        messages.add_message(request, messages.ERROR,
+                             "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
     else:
         for i in AporteMes.objects.all():
             if i.comentarios:
                 comentarios = i.comentarios
             else:
                 comentarios = '-'
-            HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year, comentarios=comentarios).save()
+            HistorialPagos(usuario=i.usuario, aporte=i.aporte, mes=date.today().month, ano=date.today().year,
+                           comentarios=comentarios).save()
             i.aporte = 0
             i.save()
         messages.add_message(request, messages.INFO, "Se ha reiniciado el mes")
@@ -162,7 +174,8 @@ def gastos(request):
     if request.method == 'POST':
         if not request.user.is_staff:
             messages.add_message(request, messages.ERROR, "Solo un administrador puede introducir gastos")
-        elif request.POST.has_key('motivo') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '' and request.POST['motivo'] != '':
+        elif request.POST.has_key('motivo') and request.POST.has_key('cantidad') and request.POST['cantidad'] != '' and \
+                        request.POST['motivo'] != '':
             if float(request.POST['cantidad']) <= 0:
                 messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
             else:
@@ -220,9 +233,9 @@ def login_user(request):
                 messages.add_message(request, messages.INFO, "Bienvenido " + user.username)
                 return HttpResponseRedirect('/')
             else:
-                messages.add_message(request, messages.ERROR,"Credenciales incorrectas")
+                messages.add_message(request, messages.ERROR, "Credenciales incorrectas")
 
-    return render(request,'login.html')
+    return render(request, 'login.html')
 
 
 @login_required
