@@ -9,6 +9,8 @@ from django.shortcuts import render
 from AporteDatabase.models import AporteMes, AporteTotal, HistorialGastos, HistorialPagos
 from django.contrib import messages
 
+
+@login_required
 def index(request):
     # pagado = AporteMes.objects.filter(aporte__gt=0)
     pagado = HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year)
@@ -50,8 +52,10 @@ def delete_user(request,uid):
     return HttpResponseRedirect('/adduser')
 
 
+@login_required
 def historial_aporte(request, year=None):
     result = []
+    anhos = []
     row_total = [["Total", '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-'], [0, '-']]
 
     for usuario in HistorialPagos.objects.values('usuario').distinct():
@@ -67,7 +71,6 @@ def historial_aporte(request, year=None):
             total += historial.aporte
             row_total[historial.mes][0] += historial.aporte
 
-        anhos = []
         for i in HistorialPagos.objects.values('ano').distinct():
             anhos.append(i['ano'])
 
@@ -154,6 +157,7 @@ def restart(request):
     return HttpResponseRedirect('/')
 
 
+@login_required
 def gastos(request):
     if request.method == 'POST':
         if not request.user.is_staff:
