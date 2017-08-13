@@ -77,7 +77,8 @@ def historial_aporte(request, year=None):
             row_total[historial.mes][0] += historial.aporte
 
         for i in HistorialPagos.objects.values('ano').distinct():
-            anhos.append(i['ano'])
+            if i['ano'] not in anhos:
+                anhos.append(i['ano'])
 
         if not date.today().year in anhos:
             anhos.append(date.today().year)
