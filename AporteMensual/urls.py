@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
-
 
 from AporteDatabase.views import index, login_user, logout_user, add_user, delete_user, pagar, restart, gastos, undo, \
     historial_aporte, subsanar_gasto
+from AporteMensual import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -35,4 +36,5 @@ urlpatterns = [
     url(r'^historial$', historial_aporte, name='historial_aporte'),
     url(r'^historial/(?P<year>[0-9]+)$', historial_aporte, name='historial_aporte'),
     url(r'^subsanar_gasto/(?P<id>[0-9]+)', subsanar_gasto, name='subsanar_gasto'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\
+              + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
