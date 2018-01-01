@@ -60,6 +60,10 @@ class Identidad(models.Model):
     en_uso = models.BooleanField(default=False)
     hint_rango = models.CharField(max_length=15)
 
+    class Meta:
+        verbose_name = 'Identidad del Nodo'
+        verbose_name_plural = 'Identidades'
+
 
 @receiver(post_save, sender=Identidad)
 def create_identidad(sender, instance, created, **kwargs):
