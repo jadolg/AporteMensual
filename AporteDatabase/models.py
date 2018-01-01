@@ -6,7 +6,6 @@ from django.utils.six import python_2_unicode_compatible
 from django.db import models
 
 
-# Create your models here.
 from AporteMensual.settings import MEDIA_ROOT
 
 
@@ -51,6 +50,10 @@ class HistorialPagos(models.Model):
 
     def __str__(self):
         return str(self.aporte) + "  " + self.usuario
+
+    class Meta:
+        verbose_name = 'Entrada'
+        verbose_name_plural = 'Historial de pagos (No Modificar)'
 
 
 @python_2_unicode_compatible
