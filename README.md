@@ -10,3 +10,4 @@ Creado originalmente para la cominudad de CS Miraflores / SNET
 4. Para iniciar el servidor de desarrollo ejecutar
     `python manage.py runserver`
 
+* **NOTA:** Este sitio necesita una refactorización INTENSIVA. Aunque funciona, es recomendable migrar todo lo posible para que utilice las funcionalidades específicas de Django, documentar correctamente el código y crear un material en video sobre cómo instalar el sitio.
