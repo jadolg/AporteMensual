@@ -1,0 +1,20 @@
+{% extends 'Base.html' %}
+{% load identity_tag %}
+
+{% block body %}
+    <div class="container">
+        <div class="col-md-7" style="margin-top: 10px; text-align: center; border-radius: 10px">
+        <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <h3><i class="fa fa-user"></i> Editar Usuario</h3>
+                <form method="post" name="formulario">
+                    {% csrf_token %}
+                    <div class="form-group"><input class="form-control" type="text" name="user" placeholder="usuario" value="{{ usuario.usuario }}"></div>
+                    <div class="form-group"><input class="form-control" type="text" name="rango" placeholder="{% get_identity_rango %}" value="{{ usuario.rango }}"></div>
+                    <div class="form-group"><input class="form-control" type="number" name="cant_usuarios" placeholder="1" value="{{ usuario.cant_usuarios }}"></div>
+                    <div class="form-group"><input type="submit" class="btn btn-primary" value="Guardar"></div>
+                </form>
+            </div>
+        </div>
+
+{% endblock %}

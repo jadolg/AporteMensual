@@ -44,6 +44,27 @@ def add_user(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
+def edit_user(request, uid):
+    if request.method == 'POST' and 'user' in request.POST and 'rango' in request.POST \
+            and 'cant_usuarios' in request.POST and request.POST['cant_usuarios'] != '':
+        usuario = AporteMes.objects.get(id=uid)
+
+        for aporte in HistorialPagos.objects.filter(usuario=usuario.usuario):
+            aporte.usuario = request.POST['user']
+            aporte.save()
+
+        usuario.usuario = request.POST['user']
+        usuario.rango = request.POST['rango']
+        usuario.cant_usuarios = request.POST['cant_usuarios']
+        usuario.save()
+        messages.add_message(request, messages.INFO,
+                             "Usuario " + request.POST['user'] + " guardado satisfactoriamente")
+
+    return render(request, 'edituser.html', {'usuario': AporteMes.objects.get(id=uid)})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def delete_user(request, uid):
     try:
         AporteMes.objects.get(id=uid).delete()

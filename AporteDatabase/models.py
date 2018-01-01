@@ -15,7 +15,7 @@ class AporteMes(models.Model):
     comentarios = models.CharField(max_length=1000, null=True)
     rango = models.CharField(max_length=100)
     cant_usuarios = models.IntegerField(default=0)
-    aporte = models.FloatField(default=0)
+    # aporte = models.FloatField(default=0)
 
     def __str__(self):
         return self.usuario

@@ -23,6 +23,7 @@
                                         <th>Rango</th>
                                         <th>Cantidad de Usuarios</th>
                                         <th>Eliminar</th>
+                                        <th>Editar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -32,6 +33,7 @@
                                         <td>{{ usuario.rango }}</td>
                                         <td>{{ usuario.cant_usuarios }}</td>
                                         <td><div class="btn btn-default" onclick="showDialog('/delete/{{ usuario.id }}','Está seguro que desea eliminar este usuario?');"><i class="fa fa-minus"></i></div></td>
+                                        <td><a href="/edit/{{ usuario.id }}"> <div class="btn btn-default"><i class="fa fa-edit"></i></div></a></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

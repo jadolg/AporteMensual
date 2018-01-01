@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 from AporteDatabase.views import index, login_user, logout_user, add_user, delete_user, pagar, restart, gastos, undo, \
-    historial_aporte, subsanar_gasto
+    historial_aporte, subsanar_gasto, edit_user
 from AporteMensual import settings
 
 urlpatterns = [
@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^logout$', logout_user, name='logout'),
     url(r'^adduser$', add_user, name='add_user'),
     url(r'^delete/(?P<uid>[0-9]+)$', delete_user, name='delete_user'),
+    url(r'^edit/(?P<uid>[0-9]+)$', edit_user, name='edit_user'),
     url(r'^undo/(?P<uid>[0-9]+)$', undo, name='undo'),
     url(r'^pagar/(?P<uid>[0-9]+)$', pagar, name='pagar'),
     url(r'^pagar$', pagar, name='pagar'),
