@@ -20,4 +20,4 @@ def get_aporte_mes():
     totalmes = 0
     for i in HistorialPagos.objects.filter(mes=date.today().month, ano=date.today().year):
         totalmes += i.aporte
-    return totalmes
+    return totalmes * 1.0
