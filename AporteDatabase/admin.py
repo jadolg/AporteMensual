@@ -12,7 +12,7 @@ class HistorialPagosAdmin(admin.ModelAdmin):
 
 
 class IdentidadAdmin(admin.ModelAdmin):
-    list_display = ('nombre_nodo', 'logo_nodo', 'hint_rango', 'en_uso')
+    list_display = ('nombre', 'logo', 'en_uso')
 
 
 admin.site.unregister(Group)

@@ -52,13 +52,12 @@ class HistorialPagos(models.Model):
 
 @python_2_unicode_compatible
 class Identidad(models.Model):
-    nombre_nodo = models.CharField(max_length=100)
-    logo_nodo = models.FileField(upload_to=MEDIA_ROOT)
+    nombre = models.CharField(max_length=100)
+    logo = models.FileField(upload_to=MEDIA_ROOT)
     en_uso = models.BooleanField(default=False)
-    hint_rango = models.CharField(max_length=15)
 
     class Meta:
-        verbose_name = 'Identidad del Nodo'
+        verbose_name = 'Identidad'
         verbose_name_plural = 'Identidades'
 
 
