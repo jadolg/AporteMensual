@@ -5,17 +5,12 @@ from django.dispatch import receiver
 from django.utils.six import python_2_unicode_compatible
 from django.db import models
 
-
 from AporteMensual.settings import MEDIA_ROOT
 
 
 @python_2_unicode_compatible
-class AporteMes(models.Model):
-    usuario = models.CharField(max_length=100)
-    comentarios = models.CharField(max_length=1000, null=True)
-    rango = models.CharField(max_length=100)
-    cant_usuarios = models.IntegerField(default=0)
-    # aporte = models.FloatField(default=0)
+class Usuario(models.Model):
+    usuario = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.usuario
@@ -46,7 +41,6 @@ class HistorialPagos(models.Model):
     aporte = models.FloatField(default=0)
     mes = models.IntegerField(default=0)
     ano = models.IntegerField(default=0)
-    # fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.aporte) + "  " + self.usuario

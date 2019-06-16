@@ -6,7 +6,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from AporteDatabase.models import AporteMes, AporteTotal, HistorialGastos, HistorialPagos
+from AporteDatabase.models import Usuario, AporteTotal, HistorialGastos, HistorialPagos
 from django.contrib import messages
 
 
@@ -20,7 +20,7 @@ def index(request):
         total_mes += i.aporte
 
     nopagado = []
-    for i in AporteMes.objects.all():
+    for i in Usuario.objects.all():
         if i.usuario not in nombres_pagados:
             nopagado.append(i)
 
@@ -30,44 +30,39 @@ def index(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def add_user(request):
-    if request.method == 'POST' and 'user' in request.POST and 'rango' in request.POST \
-            and 'cant_usuarios' in request.POST and request.POST['cant_usuarios'] != '':
-        if len(AporteMes.objects.filter(usuario=request.POST['user'])) == 0:
-            AporteMes(usuario=request.POST['user'], rango=request.POST['rango'],
-                      cant_usuarios=int(request.POST['cant_usuarios'])).save()
+    if request.method == 'POST' and 'user' in request.POST:
+        if len(Usuario.objects.filter(usuario=request.POST['user'])) == 0:
+            Usuario.objects.create(usuario=request.POST['user'])
             messages.add_message(request, messages.INFO,
                                  "Usuario " + request.POST['user'] + " creado satisfactoriamente")
         else:
             messages.add_message(request, messages.ERROR, "Ya existe un usuario con este nombre")
-    return render(request, 'adduser.html', {'usuarios': AporteMes.objects.all()})
+    return render(request, 'adduser.html', {'usuarios': Usuario.objects.all()})
 
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def edit_user(request, uid):
-    if request.method == 'POST' and 'user' in request.POST and 'rango' in request.POST \
-            and 'cant_usuarios' in request.POST and request.POST['cant_usuarios'] != '':
-        usuario = AporteMes.objects.get(id=uid)
+    if request.method == 'POST' and 'user' in request.POST:
+        usuario = Usuario.objects.get(id=uid)
 
         for aporte in HistorialPagos.objects.filter(usuario=usuario.usuario):
             aporte.usuario = request.POST['user']
             aporte.save()
 
         usuario.usuario = request.POST['user']
-        usuario.rango = request.POST['rango']
-        usuario.cant_usuarios = request.POST['cant_usuarios']
         usuario.save()
         messages.add_message(request, messages.INFO,
                              "Usuario " + request.POST['user'] + " guardado satisfactoriamente")
 
-    return render(request, 'edituser.html', {'usuario': AporteMes.objects.get(id=uid)})
+    return render(request, 'edituser.html', {'usuario': Usuario.objects.get(id=uid)})
 
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def delete_user(request, uid):
     try:
-        AporteMes.objects.get(id=uid).delete()
+        Usuario.objects.get(id=uid).delete()
         messages.add_message(request, messages.INFO, "Usuario eliminado satisfactoriamente")
     except:
         messages.add_message(request, messages.INFO, "Error eliminando usuario")
@@ -120,7 +115,7 @@ def pagar(request, uid=None):
             if float(request.POST['cantidad']) <= 0:
                 messages.add_message(request, messages.ERROR, "Ha introducido una cantidad no valida")
             else:
-                aporte = AporteMes.objects.get(id=int(request.POST['user']))
+                aporte = Usuario.objects.get(id=int(request.POST['user']))
 
                 if 'comentarios' in request.POST:
                     aporte.comentarios = request.POST['comentarios']
@@ -142,7 +137,7 @@ def pagar(request, uid=None):
                 else:
                     messages.add_message(request, messages.ERROR, "Este usuario ya ha pagado este mes")
                 next_id = 0
-                aportes = AporteMes.objects.all()
+                aportes = Usuario.objects.all()
                 for i in range(0, len(aportes)):
                     if aporte == aportes[i] and i != len(aportes) - 1:
                         try:
@@ -153,11 +148,11 @@ def pagar(request, uid=None):
         else:
             messages.add_message(request, messages.ERROR, "Datos insuficientes para realizar aporte")
 
-    usuarios = AporteMes.objects.all()
+    usuarios = Usuario.objects.all()
 
     if uid is not None:
         try:
-            selected = AporteMes.objects.get(id=uid).usuario
+            selected = Usuario.objects.get(id=uid).usuario
         except:
             selected = None
     elif len(usuarios) > 0:
@@ -175,7 +170,7 @@ def restart(request):
         messages.add_message(request, messages.ERROR,
                              "Ya se ha realizado un cierre este mes. No puede realizar dos cierres el mismo mes.")
     else:
-        for i in AporteMes.objects.all():
+        for i in Usuario.objects.all():
             if i.comentarios:
                 comentarios = i.comentarios
             else:

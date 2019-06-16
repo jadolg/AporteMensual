@@ -1,7 +1,7 @@
 from datetime import date
 from django import template
 
-from AporteDatabase.models import AporteTotal, AporteMes, HistorialPagos
+from AporteDatabase.models import AporteTotal, Usuario, HistorialPagos
 
 register = template.Library()
 

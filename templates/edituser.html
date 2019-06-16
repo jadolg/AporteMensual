@@ -10,8 +10,6 @@
                 <form method="post" name="formulario">
                     {% csrf_token %}
                     <div class="form-group"><input class="form-control" type="text" name="user" placeholder="usuario" value="{{ usuario.usuario }}"></div>
-                    <div class="form-group"><input class="form-control" type="text" name="rango" placeholder="{% get_identity_rango %}" value="{{ usuario.rango }}"></div>
-                    <div class="form-group"><input class="form-control" type="number" name="cant_usuarios" placeholder="1" value="{{ usuario.cant_usuarios }}"></div>
                     <div class="form-group"><input type="submit" class="btn btn-primary" value="Guardar"></div>
                 </form>
             </div>
